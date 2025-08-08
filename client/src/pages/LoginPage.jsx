@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../contexts/authContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import BASE_URL from "../utils/config";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -8,14 +9,14 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [err, setErr] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setErr("");
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -27,11 +28,11 @@ export default function LoginPage() {
         login(data.user, data.token);
         navigate("/dashboard");
       } else {
-        setError(data.message || "Login failed");
+        setErr(data.message || "Invalid credentials");
       }
-    } catch (err) {
-      console.error("Login error:", err.message);
-      setError("Something went wrong. Please try again.");
+    } catch (error) {
+      console.error("Login error:", error.message);
+      setErr("Something went wrong. Please try again.");
     }
   };
 
@@ -47,18 +48,18 @@ export default function LoginPage() {
           className="w-full border mb-3 px-3 py-2 rounded"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
           required
+          onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="password"
           className="w-full border mb-3 px-3 py-2 rounded"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
           required
+          onChange={(e) => setPassword(e.target.value)}
         />
-        {error && <div className="text-red-500 mb-3">{error}</div>}
+        {err && <div className="text-red-500 mb-3">{err}</div>}
         <button
           className="w-full bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
           type="submit"
@@ -66,13 +67,9 @@ export default function LoginPage() {
           Login
         </button>
         <div className="mt-4 text-center">
-          Don't have an account?{" "}
-          <span
-            className="text-blue-500 cursor-pointer"
-            onClick={() => navigate("/register")}
-          >
-            Register
-          </span>
+          <Link className="text-blue-600" to="/register">
+            Don't have an account? Register
+          </Link>
         </div>
       </form>
     </div>

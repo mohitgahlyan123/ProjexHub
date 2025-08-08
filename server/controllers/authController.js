@@ -1,23 +1,14 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
+
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
-    }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      return res.status(400).json({ message: "Invalid email format" });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
 
     const user = await User.create({ username, email, password });
@@ -25,7 +16,7 @@ export const register = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "7d" }
     );
 
     res.status(201).json({
@@ -43,15 +34,10 @@ export const register = async (req, res) => {
   }
 };
 
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
-    }
 
     const user = await User.findOne({ email });
     if (!user || !(await user.matchPassword(password))) {
@@ -61,8 +47,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_SECRET,
-
-      { expiresIn: "7D" }
+      { expiresIn: "7d" }
     );
 
     res.json({

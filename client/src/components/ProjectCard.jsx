@@ -25,7 +25,7 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
 
   return (
     <>
-      {/* CARD */}
+      
       <div className="relative p-4 bg-white dark:bg-gray-800 border rounded shadow flex flex-col gap-2 min-w-[250px] text-black dark:text-white hover:shadow-lg hover:-translate-y-1 transition duration-300">
         <button
           onClick={() => {
@@ -62,7 +62,7 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
           </button>
           <button
             onClick={() => {
-              setEditData({ ...project }); // 🆕 Reset with fresh data
+              setEditData({ ...project });
               setShowEditModal(true);
               setError("");
             }}
@@ -73,12 +73,12 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
         </div>
       </div>
 
-      {/* BACKDROP */}
+      
       {(showViewModal || showEditModal) && (
         <div className="fixed inset-0 backdrop-blur-sm z-40"></div>
       )}
 
-      {/* VIEW MODAL */}
+      
       {showViewModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="bg-white text-black rounded-lg p-6 max-w-sm w-full shadow-lg relative">
@@ -98,7 +98,7 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
         </div>
       )}
 
-      {/* EDIT MODAL */}
+     
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="bg-white text-black rounded-lg p-6 max-w-sm w-full shadow-lg relative">

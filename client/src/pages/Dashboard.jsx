@@ -4,32 +4,39 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import CreateProject from "../components/CreateProject";
 import ProjectList from "../components/ProjectList";
+import BASE_URL from "../utils/config";
 
 export default function Dashboard() {
   const { user, token } = useAuth();
-  const [projects, setProjects] = useState([]);
   const navigate = useNavigate();
 
- 
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!token) return navigate("/login");
+
+    setLoading(true);
+    setError(null);
 
     fetch(`${BASE_URL}/projects`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (res) => {
         if (!res.ok) {
-          throw new Error(`Error: ${res.status}`);
+          const errData = await res.json();
+          throw new Error(errData.message || `Error: ${res.status}`);
         }
         return res.json();
       })
       .then(setProjects)
       .catch((err) => {
         console.error("Failed to fetch projects:", err);
-      });
-  }, [token, navigate, BASE_URL]);
+        setError("Failed to load projects.");
+      })
+      .finally(() => setLoading(false));
+  }, [token, navigate]);
 
   const handleCreate = async ({ name }) => {
     try {
@@ -59,6 +66,7 @@ export default function Dashboard() {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (res.ok) {
         setProjects((prev) => prev.filter((p) => p._id !== id));
       } else {
@@ -72,7 +80,7 @@ export default function Dashboard() {
   const handleUpdate = async (id, updatedData) => {
     try {
       const res = await fetch(`${BASE_URL}/projects/${id}`, {
-        method: "PUT", 
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -99,6 +107,7 @@ export default function Dashboard() {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (res.ok) {
         setProjects([]);
       } else {
@@ -114,12 +123,23 @@ export default function Dashboard() {
       <Navbar />
       <main className="container mx-auto my-6 px-2">
         <CreateProject onCreate={handleCreate} />
-        <ProjectList
-          projects={projects}
-          onDelete={handleDelete}
-          onUpdate={handleUpdate}
-          onDeleteAll={handleDeleteAll}
-        />
+
+        {loading && (
+          <div className="text-center text-gray-500 mt-8">
+            Loading projects...
+          </div>
+        )}
+
+        {error && <div className="text-center text-red-500 mt-4">{error}</div>}
+
+        {!loading && !error && (
+          <ProjectList
+            projects={projects}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+            onDeleteAll={handleDeleteAll}
+          />
+        )}
       </main>
     </>
   );

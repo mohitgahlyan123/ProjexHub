@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/authContext";
 import { useNavigate, Link } from "react-router-dom";
+import BASE_URL from "../utils/config";
 
 export default function Register() {
-  
   const { login } = useAuth();
   const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,13 +17,14 @@ export default function Register() {
     setErr("");
 
     try {
-      const res = await fetch("/api/auth/register", {
+      const res = await fetch(`${BASE_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: name, email, password }),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (res.ok && data.token) {
         login(data.user, data.token);
@@ -81,5 +83,4 @@ export default function Register() {
       </form>
     </div>
   );
-  console.log("Register Body:", req.body);
 }

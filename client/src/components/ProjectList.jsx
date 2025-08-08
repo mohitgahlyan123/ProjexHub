@@ -10,7 +10,6 @@ export default function ProjectList({ projects, onDelete, onUpdate, onDeleteAll 
 
   return (
     <div className="relative">
-      {/* Top Controls */}
       <div className="flex justify-between items-center mb-3">
         <button
           onClick={() => {
@@ -32,7 +31,7 @@ export default function ProjectList({ projects, onDelete, onUpdate, onDeleteAll 
         />
       </div>
 
-      {/* Project Cards Container with Scroll */}
+      
       <div className="max-h-[500px] overflow-y-auto pr-2">
         {filteredProjects.length > 0 ? (
           <div className="flex flex-wrap gap-4">
