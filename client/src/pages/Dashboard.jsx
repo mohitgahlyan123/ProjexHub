@@ -7,7 +7,7 @@ import ProjectList from "../components/ProjectList";
 import BASE_URL from "../utils/config";
 
 export default function Dashboard() {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const navigate = useNavigate();
 
   const [projects, setProjects] = useState([]);
