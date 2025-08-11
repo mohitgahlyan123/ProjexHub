@@ -5,13 +5,13 @@ import mongoose from "mongoose";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
 import authRoutes from "./routes/authRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
-
 
 app.use(cors({
   origin: process.env.FRONTEND_URL,
@@ -24,7 +24,6 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/projects", projectRoutes);
 
-
 app.use((err, req, res, next) => {
   console.error(err.stack);
   const statusCode = err.statusCode || 500;
@@ -33,18 +32,22 @@ app.use((err, req, res, next) => {
   });
 });
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-if (process.env.NODE_ENV === "production") {
-  const frontendPath = path.join(__dirname, "../client/dist");
+const frontendPath = path.join(__dirname, "client", "dist");
+console.log("Frontend path:", frontendPath);
+console.log("Dist exists:", fs.existsSync(frontendPath));
+
+if (fs.existsSync(frontendPath)) {
   app.use(express.static(frontendPath));
 
   app.get("*", (req, res) => {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
+} else {
+  console.warn("⚠️ Dist folder not found — frontend will not be served.");
 }
 
 const startServer = async () => {
