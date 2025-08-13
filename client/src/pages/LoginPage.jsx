@@ -1,3 +1,4 @@
+// client/src/pages/LoginPage.jsx
 import { useState } from "react";
 import { useAuth } from "../contexts/authContext";
 import { useNavigate, Link } from "react-router-dom";
@@ -25,7 +26,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok && data.token) {
-        login(data.user, data.token);
+        await login(data.token); // token only
         navigate("/dashboard");
       } else {
         setErr(data.message || "Invalid credentials");
@@ -38,10 +39,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col items-center mt-20">
-      <form
-        className="max-w-md w-full border rounded p-6 bg-white shadow"
-        onSubmit={handleSubmit}
-      >
+      <form className="max-w-md w-full border rounded p-6 bg-white shadow" onSubmit={handleSubmit}>
         <h1 className="text-xl font-bold mb-4">Login</h1>
         <input
           type="email"
@@ -60,10 +58,7 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         {err && <div className="text-red-500 mb-3">{err}</div>}
-        <button
-          className="w-full bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
-          type="submit"
-        >
+        <button className="w-full bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800" type="submit">
           Login
         </button>
         <div className="mt-4 text-center">

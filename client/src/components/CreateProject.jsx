@@ -1,39 +1,39 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function CreateProject({ onCreate }) {
   const [name, setName] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const trimmedName = name.trim();
-    if (trimmedName) {
-      onCreate({ name: trimmedName });
-      setName("");
-    }
+    if (!name.trim()) return;
+    onCreate({ name });
+    setName("");
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col sm:flex-row gap-4 bg-gray-50 p-4 rounded shadow-sm "
-    >
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Enter Project Name"
-        className="border p-2 rounded w-full sm:w-auto"
-        required
-      />
-      <button
-        type="submit"
-        disabled={!name.trim()}
-        className={`bg-green-600 text-white px-4 py-2 rounded transition 
-          ${!name.trim() ? "opacity-50 cursor-not-allowed" : "hover:bg-green-700"}`}
-      >
-        Create Project
-      </button>
+    <form onSubmit={handleSubmit} className="w-full max-w-xl">
+      {/* Title */}
+      <h2 className="text-lg font-semibold mb-1">Create New Project</h2>
+      <p className="text-sm text-gray-600 mb-4">
+        One Business Project is associated with one WhatsApp Business API Number
+      </p>
+
+      {/* Input + Button */}
+      <div className="flex">
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter project name"
+          className="flex-1 border border-gray-500 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+        />
+        <button
+          type="submit"
+          className="ml-3 bg-green-900 text-white px-5 py-2 rounded-md text-sm hover:bg-green-800"
+        >
+          Create
+        </button>
+      </div>
     </form>
   );
 }
-

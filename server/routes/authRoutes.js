@@ -1,6 +1,8 @@
+// server/routes/authRoutes.js
 import express from "express";
 import { body, validationResult } from "express-validator";
-import { register, login } from "../controllers/authController.js";
+import { register, login, getMe } from "../controllers/authController.js";
+import authMiddleware from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -18,9 +20,7 @@ router.post(
   [
     body("username").notEmpty().withMessage("Username is required"),
     body("email").isEmail().withMessage("Valid email is required"),
-    body("password")
-      .isLength({ min: 6 })
-      .withMessage("Password must be 6+ chars"),
+    body("password").isLength({ min: 6 }).withMessage("Password must be 6+ chars"),
     handleValidationErrors,
   ],
   register
@@ -35,5 +35,7 @@ router.post(
   ],
   login
 );
+
+router.get("/me", authMiddleware, getMe);
 
 export default router;

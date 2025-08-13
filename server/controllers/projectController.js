@@ -1,11 +1,12 @@
-
 import Project from "../models/Project.js";
 
 export const getProjects = async (req, res) => {
-  const projects = await Project.find({ user: req.user.id }).sort({
-    createdAt: -1,
-  });
-  res.json(projects);
+  try {
+    const projects = await Project.find({ user: req.user.id }).sort({ createdAt: -1 });
+    res.json(projects);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch projects" });
+  }
 };
 
 export const createProject = async (req, res) => {
@@ -13,16 +14,19 @@ export const createProject = async (req, res) => {
   if (!name) {
     return res.status(400).json({ message: "Project name is required" });
   }
-  const project = await Project.create({
-    name,
-    plan: plan || "FREE FOREVER",
-    user: req.user.id,
-  });
-
-  res.status(210).json({
-    message: "Project created successfully",
-    project,
-  });
+  try {
+    const project = await Project.create({
+      name,
+      activePlan: plan || "FREE",
+      user: req.user.id,
+    });
+    res.status(201).json({
+      message: "Project created successfully",
+      project,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create project" });
+  }
 };
 
 export const deleteProject = async (req, res) => {
@@ -31,11 +35,9 @@ export const deleteProject = async (req, res) => {
       _id: req.params.id,
       user: req.user.id,
     });
-
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
-
     res.json({ message: "Project deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
@@ -50,9 +52,11 @@ export const updateProject = async (req, res) => {
       { name, status, activePlan, number },
       { new: true }
     );
-    if (!project) return res.status(404).json({ message: "Project not found" });
-    res.json({ message: "Project updated", project });
-  } catch (err) {
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    res.json({ message: "Project updated successfully", project });
+  } catch (error) {
     res.status(500).json({ message: "Update failed" });
   }
 };
@@ -60,12 +64,8 @@ export const updateProject = async (req, res) => {
 export const deleteAllProjects = async (req, res) => {
   try {
     await Project.deleteMany({ user: req.user.id });
-    res.status(200).json({ message: "All projects deleted successfully" });
+    res.json({ message: "All projects deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete projects" });
   }
 };
-
-
-
-

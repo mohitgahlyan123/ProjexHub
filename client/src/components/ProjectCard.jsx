@@ -25,60 +25,69 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
 
   return (
     <>
-      
-      <div className="relative p-4 bg-white dark:bg-gray-800 border rounded shadow flex flex-col gap-2 min-w-[250px] text-black dark:text-white hover:shadow-lg hover:-translate-y-1 transition duration-300">
+      <div className="relative p-4 bg-[#E6F2EE] dark:bg-gray-800 rounded shadow flex flex-col gap-2 w-full sm:min-w-[250px] text-black dark:text-white hover:shadow-lg hover:-translate-y-1 transition duration-300">
         <button
           onClick={() => {
             if (confirm("Delete this project?")) onDelete(project._id);
           }}
-          className="absolute top-2 right-2 text-red-600 hover:text-red-800 text-sm transition hover:scale-125"
+          className="absolute top-2 right-2 font-bold hover:text-red-800 text-sm transition hover:scale-125"
         >
-          ❌
+          X
         </button>
 
-        <div className="font-semibold">{project.name}</div>
-        <div>
-          Status:{" "}
-          <span className="text-sm text-gray-400">{project.status || "-"}</span>
-        </div>
-        <div>
-          Active Plan:{" "}
-          <span className="font-mono">{project.activePlan || "-"}</span>
-        </div>
-        <div>
-          Number:{" "}
-          <span className="text-sm text-gray-500">{project.number || "-"}</span>
-        </div>
-        <div className="text-xs text-gray-400">
-          Created: {new Date(project.createdAt).toLocaleDateString()}
+        <h2 className="text-lg font-semibold mb-4">{project.name}</h2>
+
+        <div className="flex justify-between">
+          <div className=" text-sm mb-2">
+            <span className="text-gray-800 font-semibold">Status</span>
+            <div
+            className={
+              project.status && project.status !== "Created"
+                ? "text-green-600 font-semibold"
+                : "text-gray-500 font-medium"
+            }
+          >
+            {project.status && project.status !== "" ? project.status : "Created"}
+          </div>
+          </div>
+
+          <div className=" justify-between text-sm mb-2">
+            <span className="text-gray-500 font-medium">Active plan</span>
+            <div className="text-green-700 font-bold uppercase tracking-wide">
+              {project.activePlan || "-"}
+            </div>
+          </div>
         </div>
 
-        <div className="mt-2 flex gap-2">
-          <button
-            onClick={() => setShowViewModal(true)}
-            className="bg-blue-600 text-white px-3 py-1 rounded transition duration-200 hover:bg-blue-700 hover:scale-105 text-sm"
+        <div className="justify-between text-sm mb-4">
+          <div className="text-gray-800 font-semibold">Number</div>
+          <div
+            className={
+              project.number && project.number !== "N/A"
+                ? "text-green-600 font-semibold"
+                : "text-gray-500 font-medium"
+            }
           >
-            View
-          </button>
-          <button
-            onClick={() => {
-              setEditData({ ...project });
-              setShowEditModal(true);
-              setError("");
-            }}
-            className="bg-yellow-600 text-white px-3 py-1 rounded transition duration-200 hover:bg-yellow-700 hover:scale-105 text-sm"
-          >
-            Edit
-          </button>
+            {project.number && project.number !== "" ? project.number : "N/A"}
+          </div>
         </div>
+
+        <p className="text-xs text-gray-400 mb-4">
+          Created at {new Date(project.createdAt).toLocaleDateString()}
+        </p>
+
+        <button
+          onClick={() => setShowViewModal(true)}
+          className="w-full border border-gray-300 border-b-green-400 border-t-green-400 rounded-md py-1.5 text-sm text-gray-800 hover:bg-gray-50"
+        >
+          View
+        </button>
       </div>
 
-      
       {(showViewModal || showEditModal) && (
         <div className="fixed inset-0 backdrop-blur-sm z-40"></div>
       )}
 
-      
       {showViewModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="bg-white text-black rounded-lg p-6 max-w-sm w-full shadow-lg relative">
@@ -89,16 +98,40 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
               ✖
             </button>
             <h2 className="text-lg font-bold mb-4">Project Details</h2>
-            <p><strong>Name:</strong> {project.name}</p>
-            <p><strong>Status:</strong> {project.status}</p>
-            <p><strong>Plan:</strong> {project.activePlan}</p>
-            <p><strong>Number:</strong> {project.number}</p>
-            <p><strong>Created:</strong> {new Date(project.createdAt).toLocaleString()}</p>
+            <p>
+              <strong>Name:</strong> {project.name}
+            </p>
+            <p>
+              <strong>Status:</strong> {project.status}
+            </p>
+            <p>
+              <strong>Plan:</strong> {project.activePlan}
+            </p>
+            <p>
+              <strong>Number:</strong> {project.number}
+            </p>
+            <p>
+              <strong>Created:</strong>{" "}
+              {new Date(project.createdAt).toLocaleString()}
+            </p>
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setEditData({ ...project });
+                  setShowEditModal(true);
+                  setShowViewModal(false);
+                  setError("");
+                }}
+                className="bg-yellow-500 text-white px-4 py-1 rounded hover:bg-yellow-600 transition"
+              >
+                Edit
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-     
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="bg-white text-black rounded-lg p-6 max-w-sm w-full shadow-lg relative">
