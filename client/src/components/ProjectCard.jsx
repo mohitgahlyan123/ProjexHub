@@ -24,7 +24,7 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
   return (
     <>
 
-      <div className="relative p-4 bg-[#eef7f4] dark:bg-gray-800 rounded shadow flex flex-col gap-2 w-full text-black dark:text-white hover:shadow-lg hover:-translate-y-1 transition duration-300">
+      <div className="relative p-4 bg-[#eef7f4]  rounded shadow flex flex-col gap-2 w-full text-black  hover:shadow-lg hover:-translate-y-1 transition duration-300">
 
         <button
           onClick={() => {
