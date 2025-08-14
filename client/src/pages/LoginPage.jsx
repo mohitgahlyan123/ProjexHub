@@ -11,10 +11,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErr("");
+    setLoading(true); 
 
     try {
       const res = await fetch(`${BASE_URL}/auth/login`, {
@@ -34,12 +36,17 @@ export default function LoginPage() {
     } catch (error) {
       console.error("Login error:", error.message);
       setErr("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex flex-col items-center mt-20">
-      <form className="max-w-md w-full border rounded p-6 bg-white shadow" onSubmit={handleSubmit}>
+      <form
+        className="max-w-md w-full border rounded p-6 bg-white shadow"
+        onSubmit={handleSubmit}
+      >
         <h1 className="text-xl font-bold mb-4">Login</h1>
         <input
           type="email"
@@ -58,9 +65,22 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         {err && <div className="text-red-500 mb-3">{err}</div>}
-        <button className="w-full bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800" type="submit">
-          Login
+
+        <button
+          className="w-full bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 flex items-center justify-center"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+              Logging in...
+            </>
+          ) : (
+            "Login"
+          )}
         </button>
+
         <div className="mt-4 text-center">
           <Link className="text-blue-600" to="/register">
             Don't have an account? Register

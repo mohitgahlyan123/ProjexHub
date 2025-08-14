@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProjectCard from "./ProjectCard";
 
 export default function ProjectList({ projects, onDelete, onUpdate, onDeleteAll }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true); 
+
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => setLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [projects]);
 
   const filteredProjects = projects.filter((project) =>
     project.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -10,7 +18,6 @@ export default function ProjectList({ projects, onDelete, onUpdate, onDeleteAll 
 
   return (
     <div className="relative w-full">
-
       <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 mb-3">
         <button
           onClick={() => {
@@ -32,10 +39,15 @@ export default function ProjectList({ projects, onDelete, onUpdate, onDeleteAll 
         />
       </div>
 
-
-      <div className="max-h-[500px] overflow-y-auto pr-1">
-        {filteredProjects.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="max-h-[500px] overflow-y-auto pr-1 flex justify-center items-center">
+        {loading ? (
+          
+          <div className="flex justify-center items-center w-full py-10">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
+          </div>
+        ) : filteredProjects.length > 0 ? (
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
             {filteredProjects.map((project) => (
               <ProjectCard
                 key={project._id}
