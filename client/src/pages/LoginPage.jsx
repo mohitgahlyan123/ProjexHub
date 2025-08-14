@@ -48,7 +48,7 @@ export default function LoginPage() {
         {[...Array(12)].map((_, i) => (
           <div
             key={i}
-            className="absolute top-1/2 left-1/2 w-3 h-6 bg-gray-800 rounded-full"
+            className="absolute top-1/2 left-1/2 w-2 h-8 bg-gray-800 rounded-full"
             style={{
               transform: `rotate(${i * 30}deg) translate(0, -28px)`,
               transformOrigin: "center",
