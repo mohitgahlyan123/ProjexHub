@@ -89,7 +89,7 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
         </button>
       </div>
 
-
+{/*  edit and view  */}
       {(showViewModal || showEditModal) && (
         <div className="fixed inset-0 backdrop-blur-sm z-40"></div>
       )}
