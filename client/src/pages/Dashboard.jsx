@@ -1,4 +1,3 @@
-// client/src/pages/Dashboard.jsx
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
@@ -15,12 +14,11 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Redirect if no token
   useEffect(() => {
     if (!token && !loadingUser) navigate("/login");
   }, [token, loadingUser, navigate]);
 
-  // Fetch projects
+
   useEffect(() => {
     if (!token) return;
     setLoading(true);
@@ -41,7 +39,7 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, [token]);
 
-  // Create new project
+
   const handleCreate = async ({ name }) => {
     try {
       const res = await fetch(`${BASE_URL}/projects`, {
@@ -61,7 +59,7 @@ export default function Dashboard() {
     }
   };
 
-  // Delete project
+
   const handleDelete = async (id) => {
     try {
       const res = await fetch(`${BASE_URL}/projects/${id}`, {
@@ -76,15 +74,14 @@ export default function Dashboard() {
     }
   };
 
-  // Update project
+
   const handleUpdate = async (id, updatedData) => {
     try {
       const res = await fetch(`${BASE_URL}/projects/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}` },
         body: JSON.stringify(updatedData),
       });
       const data = await res.json();
@@ -98,7 +95,7 @@ export default function Dashboard() {
     }
   };
 
-  // Delete all projects
+
   const handleDeleteAll = async () => {
     try {
       const res = await fetch(`${BASE_URL}/projects`, {
@@ -115,41 +112,39 @@ export default function Dashboard() {
     <>
       <Navbar />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-        {/* Welcome */}
-        <h2 className="text-lg font-semibold mb-4">
-          Welcome, {name || "User"}
+
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">
+          Welcome, {name}
         </h2>
 
-        {/* Create Project Card */}
-        <div className="bg-[#E6F2EE] rounded-xl h-60 p-6 flex flex-col md:flex-row items-center justify-between mb-8">
-          <div className="flex-1">
+
+        <div className="bg-[#E6F2EE] rounded-xl min-h-[15rem] p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+          <div className="flex-1 w-full">
             <CreateProject onCreate={handleCreate} />
           </div>
-          <div className="mt-4 md:mt-0 md:ml-8">
+          <div className="flex-shrink-0">
             <img
               src="/project-illustration.png"
               alt="Create Project"
-              className="w-48 h-auto"
+              className="w-32 sm:w-48 h-auto mx-auto md:mx-0"
             />
           </div>
         </div>
 
-        {/* Recent Projects */}
-        <h3 className="font-medium mb-4">Recent Projects</h3>
+
+        <h3 className="text-base sm:text-lg font-medium mb-4">Recent Projects</h3>
         {loading && (
           <div className="text-center text-gray-500">Loading projects...</div>
         )}
         {error && <div className="text-center text-red-500">{error}</div>}
 
         {!loading && !error && (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <ProjectList
-              projects={projects}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-              onDeleteAll={handleDeleteAll}
-            />
-          </div>
+          <ProjectList
+            projects={projects}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+            onDeleteAll={handleDeleteAll}
+          />
         )}
       </main>
     </>

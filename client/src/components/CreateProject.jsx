@@ -12,13 +12,13 @@ export default function CreateProject({ onCreate }) {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-xl">
-      {/* Title */}
+
       <h2 className="text-lg font-semibold mb-1">Create New Project</h2>
       <p className="text-sm text-gray-600 mb-4">
         One Business Project is associated with one WhatsApp Business API Number
       </p>
 
-      {/* Input + Button */}
+
       <div className="flex">
         <input
           type="text"

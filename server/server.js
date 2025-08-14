@@ -23,7 +23,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/projects", projectRoutes);
 
-// Global error handler
+// Global error handle
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.statusCode || 500).json({

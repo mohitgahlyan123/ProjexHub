@@ -26,7 +26,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok && data.token) {
-        await login(data.token); // token only
+        await login(data.token);
         navigate("/dashboard");
       } else {
         setErr(data.message || "Invalid credentials");

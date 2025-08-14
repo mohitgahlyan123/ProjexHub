@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // login with token only
+
   const login = async (jwt) => {
     setToken(jwt);
     localStorage.setItem("token", jwt);
