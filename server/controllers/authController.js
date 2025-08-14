@@ -47,7 +47,6 @@ export const login = async (req, res) => {
 
 export const getMe = async (req, res) => {
   try {
-    // req.user is set by auth middleware
     res.json({
       id: req.user._id,
       username: req.user.username,

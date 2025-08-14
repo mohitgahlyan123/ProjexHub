@@ -11,7 +11,7 @@ export default function ProjectList({ projects, onDelete, onUpdate, onDeleteAll 
   return (
     <div className="relative">
       <div className="flex justify-between items-center mb-3">
-        {/* <button
+        <button
           onClick={() => {
             if (confirm("Are you sure you want to delete all projects?")) {
               onDeleteAll();
@@ -20,15 +20,15 @@ export default function ProjectList({ projects, onDelete, onUpdate, onDeleteAll 
           className="text-sm text-gray-500 hover:text-red-600 transition"
         >
           Delete All Projects
-        </button> */}
+        </button>
 
-        {/* <input
+        <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search by project name"
           className="border text-sm px-2 py-1 rounded focus:outline-none focus:ring focus:border-blue-300"
-        /> */}
+        />
       </div>
 
       
