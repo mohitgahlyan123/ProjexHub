@@ -41,7 +41,7 @@ export default function LoginPage() {
     }
   };
 
-  // iOS-style spinner loader
+
   const IOSLoader = () => (
     <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50">
       <div className="relative w-20 h-20">

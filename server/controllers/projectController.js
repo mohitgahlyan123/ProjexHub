@@ -31,6 +31,14 @@ export const createProject = async (req, res) => {
 
 export const deleteProject = async (req, res) => {
   try {
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({ message: "Password is required" });
+    }
+    const user = await (await import('../models/User.js')).default.findById(req.user.id);
+    if (!user || !(await user.matchPassword(password))) {
+      return res.status(401).json({ message: "Wrong password" });
+    }
     const project = await Project.findOneAndDelete({
       _id: req.params.id,
       user: req.user.id,
@@ -63,6 +71,14 @@ export const updateProject = async (req, res) => {
 
 export const deleteAllProjects = async (req, res) => {
   try {
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({ message: "Password is required" });
+    }
+    const user = await (await import('../models/User.js')).default.findById(req.user.id);
+    if (!user || !(await user.matchPassword(password))) {
+      return res.status(401).json({ message: "Wrong password" });
+    }
     await Project.deleteMany({ user: req.user.id });
     res.json({ message: "All projects deleted successfully" });
   } catch (error) {

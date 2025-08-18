@@ -1,12 +1,12 @@
-
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/authContext";
+import LogoImage from "../assets/logo.png"; 
 
 function InitialCircle({ name = "U" }) {
   const letter = (name?.trim()?.[0] || "U").toUpperCase();
   return (
-    <div className="h-8 w-8 rounded-full bg-green-600/90 text-white grid place-items-center font-semibold" aria-hidden>
-      {letter}
+    <div className="w-[34px] h-[34px] rounded-full bg-white text-[#0a474c] flex justify-center items-center font-roboto cursor-pointer">
+      <span className="text-[1.25rem] font-semibold">{letter}</span>
     </div>
   );
 }
@@ -19,7 +19,12 @@ export default function Navbar() {
 
   useEffect(() => {
     const onDocClick = (e) => {
-      if (!menuRef.current || menuRef.current.contains(e.target) || btnRef.current?.contains(e.target)) return;
+      if (
+        !menuRef.current ||
+        menuRef.current.contains(e.target) ||
+        btnRef.current?.contains(e.target)
+      )
+        return;
       setOpen(false);
     };
     document.addEventListener("mousedown", onDocClick);
@@ -30,13 +35,15 @@ export default function Navbar() {
   const email = user?.email || "";
 
   return (
-    <nav className="w-full  bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <svg className="h-5 w-5 text-green-600" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-            <path d="M4 6h16v2H4zM4 11h10v2H4zM4 16h16v2H4z" />
-          </svg>
-          <span className="font-semibold text-gray-800">ProjexHub</span>
+    <nav className="w-full ">
+      <div className="w-full mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+
+        <div className="flex items-center space-x-2">
+          <div className="p-1">
+            <div className="w-[50px] h-[50px]">
+              <img src={LogoImage} alt="Logo" />
+            </div>
+          </div>
         </div>
 
         <div className="relative">
@@ -47,8 +54,8 @@ export default function Navbar() {
             aria-haspopup="menu"
             aria-expanded={open}
           >
-            <span className="hidden sm:block text-sm text-gray-500">
-              Welcome, <span className="font-medium text-gray-800">{name}</span>
+            <span className="hidden sm:block text-sm text-white">
+              Welcome, <span className="font-medium font-roboto">{name}</span>
             </span>
             <InitialCircle name={name} />
           </button>
@@ -61,7 +68,9 @@ export default function Navbar() {
             >
               <div className="mb-2">
                 <div className="text-sm font-medium text-gray-900">{name}</div>
-                {email ? <div className="text-xs text-gray-500 truncate">{email}</div> : null}
+                {email ? (
+                  <div className="text-xs text-gray-500 truncate">{email}</div>
+                ) : null}
               </div>
               <div className="h-px bg-gray-200 my-2" />
               <button

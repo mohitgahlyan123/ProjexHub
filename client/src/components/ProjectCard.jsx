@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { FaWhatsapp } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 export default function ProjectCard({ project, onDelete, onUpdate }) {
   const [showViewModal, setShowViewModal] = useState(false);
@@ -21,14 +23,23 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
     setError("");
   };
 
+  const handleWhatsappClick = (number) => {
+    if (!number || number === "N/A") {
+      toast.error("No valid number available!");
+      return;
+    }
+
+    navigator.clipboard.writeText(number);
+    toast.success(`Number copied: ${number}`);
+    window.open(`https://wa.me/${number}`, "_blank");
+  };
+
   return (
     <>
-
-      <div className="relative p-4 bg-[#eef7f4]  rounded shadow flex flex-col gap-2 w-full text-black  hover:shadow-lg hover:-translate-y-1 transition duration-300">
-
+      <div className="relative p-4 bg-[#eef7f4] rounded shadow flex flex-col gap-2 w-full text-black hover:shadow-lg hover:-translate-y-1 transition duration-300">
         <button
           onClick={() => {
-            if (confirm("Delete this project?")) onDelete(project._id);
+            onDelete(project._id);
           }}
           className="absolute top-2 right-2 font-bold hover:text-red-800 text-lg sm:text-sm transition hover:scale-125"
         >
@@ -38,7 +49,6 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
         <h2 className="text-lg sm:text-xl font-semibold mb-2 break-words">
           {project.name}
         </h2>
-
 
         <div className="flex flex-wrap justify-between gap-3">
           <div className="text-sm min-w-[45%]">
@@ -65,13 +75,17 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
         <div className="text-sm">
           <div className="text-gray-800 font-semibold">Number</div>
           <div
-            className={
+            className={`flex items-center gap-2 cursor-pointer ${
               project.number && project.number !== "N/A"
-                ? "text-green-600 font-semibold"
+                ? "text-green-600 font-semibold hover:underline"
                 : "text-gray-500 font-medium"
-            }
+            }`}
+            onClick={() => handleWhatsappClick(project.number)}
           >
             {project.number || "N/A"}
+            {project.number && project.number !== "N/A" && (
+              <FaWhatsapp className="text-green-500 text-lg" />
+            )}
           </div>
         </div>
 
@@ -89,12 +103,11 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
         </button>
       </div>
 
-{/*  edit and view  */}
       {(showViewModal || showEditModal) && (
         <div className="fixed inset-0 backdrop-blur-sm z-40"></div>
       )}
 
-
+      {/* View Modal */}
       {showViewModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
           <div className="bg-white text-black rounded-lg p-4 sm:p-6 w-full max-w-xs sm:max-w-md shadow-lg relative">
@@ -105,11 +118,31 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
               ✖
             </button>
             <h2 className="text-lg font-bold mb-4">Project Details</h2>
-            <p><strong>Name:</strong> {project.name}</p>
-            <p><strong>Status:</strong> {project.status}</p>
-            <p><strong>Plan:</strong> {project.activePlan}</p>
-            <p><strong>Number:</strong> {project.number}</p>
-            <p><strong>Created:</strong> {new Date(project.createdAt).toLocaleString()}</p>
+            <p>
+              <strong>Name:</strong> {project.name}
+            </p>
+            <p>
+              <strong>Status:</strong> {project.status}
+            </p>
+            <p>
+              <strong>Plan:</strong> {project.activePlan}
+            </p>
+            <p>
+              <strong>Number:</strong>{" "}
+              <span
+                className="text-green-600 cursor-pointer hover:underline inline-flex items-center gap-1"
+                onClick={() => handleWhatsappClick(project.number)}
+              >
+                {project.number}
+                {project.number && project.number !== "N/A" && (
+                  <FaWhatsapp className="text-green-500" />
+                )}
+              </span>
+            </p>
+            <p>
+              <strong>Created:</strong>{" "}
+              {new Date(project.createdAt).toLocaleString()}
+            </p>
 
             <div className="mt-4 flex justify-end gap-2 flex-wrap">
               <button
@@ -128,7 +161,7 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
         </div>
       )}
 
-
+      {/* Edit Modal */}
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
           <div className="bg-white text-black rounded-lg p-4 sm:p-6 w-full max-w-xs sm:max-w-md shadow-lg relative">
@@ -143,25 +176,33 @@ export default function ProjectCard({ project, onDelete, onUpdate }) {
             <input
               className="border p-2 w-full mb-2 rounded"
               value={editData.name}
-              onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+              onChange={(e) =>
+                setEditData({ ...editData, name: e.target.value })
+              }
               placeholder="Name"
             />
             <input
               className="border p-2 w-full mb-2 rounded"
               value={editData.status}
-              onChange={(e) => setEditData({ ...editData, status: e.target.value })}
+              onChange={(e) =>
+                setEditData({ ...editData, status: e.target.value })
+              }
               placeholder="Status"
             />
             <input
               className="border p-2 w-full mb-2 rounded"
               value={editData.activePlan}
-              onChange={(e) => setEditData({ ...editData, activePlan: e.target.value })}
+              onChange={(e) =>
+                setEditData({ ...editData, activePlan: e.target.value })
+              }
               placeholder="Plan"
             />
             <input
               className="border p-2 w-full mb-2 rounded"
               value={editData.number}
-              onChange={(e) => setEditData({ ...editData, number: e.target.value })}
+              onChange={(e) =>
+                setEditData({ ...editData, number: e.target.value })
+              }
               placeholder="Number"
             />
 

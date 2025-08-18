@@ -1,17 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ProjectCard from "./ProjectCard";
 
 export default function ProjectList({ projects, onDelete, onUpdate, onDeleteAll }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true); 
-
-
-  useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, [projects]);
-
   const filteredProjects = projects.filter((project) =>
     project.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -20,11 +11,7 @@ export default function ProjectList({ projects, onDelete, onUpdate, onDeleteAll 
     <div className="relative w-full">
       <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 mb-3">
         <button
-          onClick={() => {
-            if (confirm("Are you sure you want to delete all projects?")) {
-              onDeleteAll();
-            }
-          }}
+          onClick={onDeleteAll}
           className="text-sm text-gray-500 hover:text-red-600 transition w-full sm:w-auto text-left sm:text-center"
         >
           Delete All Projects
@@ -39,15 +26,10 @@ export default function ProjectList({ projects, onDelete, onUpdate, onDeleteAll 
         />
       </div>
 
-      <div className="max-h-[500px] overflow-y-auto pr-1 flex justify-center items-center">
-        {loading ? (
-          
-          <div className="flex justify-center items-center w-full py-10">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
-          </div>
-        ) : filteredProjects.length > 0 ? (
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+
+      <div className="max-h-[500px] overflow-y-auto pr-1">
+        {filteredProjects.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredProjects.map((project) => (
               <ProjectCard
                 key={project._id}
