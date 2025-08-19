@@ -32,8 +32,8 @@ export const validateRegister = [
     .normalizeEmail(),
   
   body('password')
-    .isLength({ min: 6, max: 128 })
-    .withMessage('Password must be between 6 and 128 characters')
+    .isLength({ min: 6, max: 30 })
+    .withMessage('Password must be between 6 and 30 characters')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
     .withMessage('Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'),
   
@@ -80,14 +80,14 @@ export const validateUpdateProject = [
   body('name')
     .optional()
     .trim()
-    .isLength({ min: 1, max: 100 })
-    .withMessage('Project name must be between 1 and 100 characters')
+    .isLength({ min: 1, max: 36 })
+    .withMessage('Project name must be between 1 and 36 characters')
     .escape(),
   
   body('status')
     .optional()
-    .isLength({ min: 1, max: 50 })
-    .withMessage('Status must be between 1 and 50 characters')
+    .isLength({ min: 1, max: 36 })
+    .withMessage('Status must be between 1 and 36 characters')
     .escape(),
   
   body('activePlan')
@@ -98,8 +98,8 @@ export const validateUpdateProject = [
   body('number')
     .optional()
     .trim()
-    .isLength({ max: 20 })
-    .withMessage('Number must be 20 characters or less')
+    .isLength({ max: 15 })
+    .withMessage('Number must be 15 characters or less')
     .escape(),
   
   validate
