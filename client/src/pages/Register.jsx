@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useAuth } from "../contexts/authContext";
 import { useNavigate, Link } from "react-router-dom";
 import BASE_URL from "../utils/config";
+import PasswordInput from "../components/PasswordInput";
 
 export default function Register() {
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
@@ -16,24 +17,32 @@ export default function Register() {
     e.preventDefault();
     setErr("");
 
+    // Client-side validation
+    if (name.length < 3 || name.length > 30) {
+      setErr("Username must be between 3 and 30 characters");
+      return;
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(name)) {
+      setErr("Username can only contain letters, numbers, and underscores");
+      return;
+    }
+    if (password.length < 6 || password.length > 128) {
+      setErr("Password must be between 6 and 128 characters");
+      return;
+    }
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(password)) {
+      setErr("Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character");
+      return;
+    }
+
     try {
-      const res = await fetch(`${BASE_URL}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: name, email, password }),
-      });
-
-      const text = await res.text();
-      const data = text ? JSON.parse(text) : {};
-
-      if (res.ok && data.token) {
-        login(data.user, data.token);
+      const result = await register({ username: name, email, password });
+      if (result.success) {
         navigate("/dashboard");
       } else {
-        setErr(data.message || "Registration failed");
+        setErr(result.error || "Registration failed");
       }
     } catch (error) {
-      console.error("Registration Error:", error.message);
       setErr("Something went wrong. Please try again.");
     }
   };
@@ -60,11 +69,9 @@ export default function Register() {
           required
           onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          type="password"
-          className="w-full border mb-3 px-3 py-2 rounded"
-          placeholder="Password"
+        <PasswordInput
           value={password}
+          placeholder="Password"
           required
           onChange={(e) => setPassword(e.target.value)}
         />

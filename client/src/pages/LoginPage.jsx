@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../contexts/authContext";
 import { useNavigate, Link } from "react-router-dom";
 import BASE_URL from "../utils/config";
+import PasswordInput from "../components/PasswordInput";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -14,32 +15,23 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErr("");
-    setLoading(true);
+  e.preventDefault();
+  setErr("");
+  setLoading(true);
 
-    try {
-      const res = await fetch(`${BASE_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.token) {
-        await login(data.token);
-        navigate("/dashboard");
-      } else {
-        setErr(data.message || "Invalid credentials");
-      }
-    } catch (error) {
-      console.error("Login error:", error.message);
-      setErr("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
+  try {
+    const result = await login({ email, password });
+    if (result.success) {
+      navigate("/dashboard");
+    } else {
+      setErr(result.error || "Invalid credentials");
     }
-  };
+  } catch (error) {
+    setErr("Something went wrong. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
 
   const IOSLoader = () => (
@@ -86,11 +78,9 @@ export default function LoginPage() {
           required
           onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          type="password"
-          className="w-full border mb-3 px-3 py-2 rounded"
-          placeholder="Password"
+        <PasswordInput
           value={password}
+          placeholder="Password"
           required
           onChange={(e) => setPassword(e.target.value)}
         />

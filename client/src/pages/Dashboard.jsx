@@ -39,7 +39,7 @@ export default function Dashboard() {
         }
         return res.json();
       })
-      .then(setProjects)
+      .then(data => setProjects(data.projects || []))
       .catch(() => setError("Failed to load projects."))
       .finally(() => setLoading(false));
   }, [token]);
@@ -146,10 +146,10 @@ export default function Dashboard() {
   return (
     <>
       <Navbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-        <h2 className="text-lg sm:text-xl font-normal mb-4">Welcome, {name}</h2>
+      <main className="max-w-7xl mx-auto px-6 sm:px-8 py-8">
+        <h2 className="text-xl sm:text-2xl font-normal mb-6">Welcome, {name}</h2>
 
-        <div className="bg-[#ebf5f3] rounded-xl min-h-[15rem] p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+        <div className="bg-[#ebf5f3] rounded-2xl min-h-[20rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-8 mb-10">
           <div className="flex-1 w-full">
             <CreateProject onCreate={handleCreate} />
           </div>
@@ -157,12 +157,12 @@ export default function Dashboard() {
             <img
               src={CreatePage}
               alt="Create Project"
-              className="w-32 sm:w-48 h-auto mx-auto md:mx-0"
+              className="w-40 sm:w-64 h-auto mx-auto md:mx-0"
             />
           </div>
         </div>
 
-        <h3 className="text-base sm:text-lg font-medium mb-4">
+        <h3 className="text-lg sm:text-xl font-medium mb-6">
           Recent Projects
         </h3>
         {loading && (

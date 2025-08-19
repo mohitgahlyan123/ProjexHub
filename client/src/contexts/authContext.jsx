@@ -1,6 +1,5 @@
-// client/src/contexts/authContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
-import BASE_URL from "../utils/config";
+import api from "../utils/api";
 
 const AuthContext = createContext();
 
@@ -8,51 +7,135 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem("token") || null);
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(false);
+  const [authError, setAuthError] = useState(null);
 
   const fetchMe = async (jwt) => {
     try {
       setLoadingUser(true);
-      const res = await fetch(`${BASE_URL}/auth/me`, {
-        headers: { Authorization: `Bearer ${jwt}` },
-      });
-      if (!res.ok) throw new Error("Failed to fetch profile");
-      const data = await res.json();
+      setAuthError(null);
+      
+      // Set token for API calls
+      api.setToken(jwt);
+      
+      const data = await api.get('/auth/me');
       setUser({
-        id: data.id,
-        username: data.username,
-        email: data.email,
+        id: data.user.id,
+        username: data.user.username,
+        email: data.user.email,
       });
-    } catch {
+    } catch (error) {
+      console.error("Auth error:", error);
       setUser(null);
       setToken(null);
+      api.removeToken();
       localStorage.removeItem("token");
+      setAuthError(error.message);
     } finally {
       setLoadingUser(false);
     }
   };
 
+  const login = async (credentials) => {
+    try {
+      setAuthError(null);
+      const response = await api.post('/auth/login', credentials);
+      
+      if (response.success) {
+        const { token: newToken, user: userData } = response;
+        setToken(newToken);
+        api.setToken(newToken);
+        localStorage.setItem("token", newToken);
+        setUser({
+          id: userData.id,
+          username: userData.username,
+          email: userData.email,
+        });
+        return { success: true };
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setAuthError(error.message);
+      return { success: false, error: error.message };
+    }
+  };
 
-  const login = async (jwt) => {
-    setToken(jwt);
-    localStorage.setItem("token", jwt);
-    await fetchMe(jwt);
+  const register = async (userData) => {
+    try {
+      setAuthError(null);
+      const response = await api.post('/auth/register', userData);
+      
+      if (response.success) {
+        const { token: newToken, user: newUser } = response;
+        setToken(newToken);
+        api.setToken(newToken);
+        localStorage.setItem("token", newToken);
+        setUser({
+          id: newUser.id,
+          username: newUser.username,
+          email: newUser.email,
+        });
+        return { success: true };
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setAuthError(error.message);
+      return { success: false, error: error.message };
+    }
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
+    api.removeToken();
     localStorage.removeItem("token");
+    setAuthError(null);
+  };
+
+  const clearAuthError = () => {
+    setAuthError(null);
   };
 
   useEffect(() => {
-    if (token) fetchMe(token);
+    if (token) {
+      fetchMe(token);
+    }
   }, [token]);
 
+  // Check token validity on app load
+  useEffect(() => {
+    const checkToken = async () => {
+      const storedToken = localStorage.getItem("token");
+      if (storedToken && !token) {
+        setToken(storedToken);
+      }
+    };
+    
+    checkToken();
+  }, []);
+
+  const value = {
+    user,
+    token,
+    loadingUser,
+    authError,
+    login,
+    register,
+    logout,
+    clearAuthError,
+    isAuthenticated: !!user && !!token
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, setUser, login, logout, loadingUser }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

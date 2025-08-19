@@ -1,59 +1,80 @@
 // server/controllers/authController.js
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import { asyncHandler } from "../middleware/errorHandler.js";
 
-export const register = async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
+export const register = asyncHandler(async (req, res) => {
+  const { username, email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "Email already exists" });
-
-    const user = await User.create({ username, email, password });
-
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" });
-
-    res.status(201).json({
-      message: "User registered successfully",
-      token,
-      user: { id: user._id, username: user.username, email: user.email },
+  // Check if user already exists
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({
+      success: false,
+      message: "Email already exists"
     });
-  } catch (error) {
-    console.error("Register error:", error.message);
-    res.status(500).json({ message: "Server error during registration" });
   }
-};
 
-export const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  // Create user
+  const user = await User.create({ username, email, password });
 
-    const user = await User.findOne({ email });
-    if (!user || !(await user.matchPassword(password)))
-      return res.status(401).json({ message: "Invalid email or password" });
+  // Generate token
+  const token = jwt.sign(
+    { id: user._id, email: user.email }, 
+    process.env.JWT_SECRET, 
+    { expiresIn: "7d" }
+  );
 
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" });
+  res.status(201).json({
+    success: true,
+    message: "User registered successfully",
+    token,
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email
+    }
+  });
+});
 
-    res.json({
-      message: "Login successfully",
-      token,
-      user: { id: user._id, username: user.username, email: user.email },
+export const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  // Find user and check password
+  const user = await User.findOne({ email });
+  if (!user || !(await user.matchPassword(password))) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid email or password"
     });
-  } catch (error) {
-    console.error("Login error:", error.message);
-    res.status(500).json({ message: "Server error during login" });
   }
-};
 
-export const getMe = async (req, res) => {
-  try {
-    res.json({
+  // Generate token
+  const token = jwt.sign(
+    { id: user._id, email: user.email }, 
+    process.env.JWT_SECRET, 
+    { expiresIn: "7d" }
+  );
+
+  res.json({
+    success: true,
+    message: "Login successful",
+    token,
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email
+    }
+  });
+});
+
+export const getMe = asyncHandler(async (req, res) => {
+  res.json({
+    success: true,
+    user: {
       id: req.user._id,
       username: req.user.username,
-      email: req.user.email,
-    });
-  } catch (error) {
-    console.error("GetMe error:", error.message);
-    res.status(500).json({ message: "Server error fetching user" });
-  }
-};
+      email: req.user.email
+    }
+  });
+});
