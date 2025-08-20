@@ -130,7 +130,7 @@ export default function Register() {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="pl-10 h-12 border-gray-200 dark:border-gray-700 focus:border-green-500 focus:ring-green-500 rounded-lg"
+                    className="pl-10 h-12 border-gray-200 dark:border-gray-700 dark:text-white focus:border-green-500 focus:ring-green-500 rounded-lg"
                     required
                   />
                 </div>
@@ -151,7 +151,7 @@ export default function Register() {
                     placeholder="Create a password"
                     value={formData.password}
                     onChange={(e) => handleInputChange("password", e.target.value)}
-                    className="pl-10 pr-10 h-12 border-gray-200 dark:border-gray-700 focus:border-green-500 focus:ring-green-500 rounded-lg"
+                    className="pl-10 pr-10 h-12 border-gray-200 dark:text-white dark:border-gray-700 focus:border-green-500 focus:ring-green-500 rounded-lg"
                     required
                   />
                   <button
@@ -179,7 +179,7 @@ export default function Register() {
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
                     onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                    className="pl-10 pr-10 h-12 border-gray-200 dark:border-gray-700 focus:border-green-500 focus:ring-green-500 rounded-lg"
+                    className="pl-10 pr-10 h-12 border-gray-200 dark:text-white dark:border-gray-700 focus:border-green-500 focus:ring-green-500 rounded-lg"
                     required
                   />
                   <button

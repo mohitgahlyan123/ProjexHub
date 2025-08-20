@@ -46,7 +46,7 @@ export default function CreateProject({ onCreate }) {
         <button
           type="submit"
           disabled={!name.trim()}
-          className={`mt-3 h-10 w-30 rounded-md text-xs font-medium transition-colors ${
+          className={`mt-3 h-10 w-full sm:w-40 rounded-md text-xs font-medium transition-colors ${
             !name.trim()
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-green-900 text-white hover:bg-green-800"
