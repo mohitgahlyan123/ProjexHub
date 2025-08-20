@@ -109,7 +109,7 @@ export default function Register() {
                     placeholder="Choose a username"
                     value={formData.username}
                     onChange={(e) => handleInputChange("username", e.target.value)}
-                    className="pl-10 h-12 border-gray-200 dark:border-gray-700 focus:border-green-500 focus:ring-green-500 rounded-lg"
+                    className="pl-10 h-12 border-gray-200 dark:text-white dark:border-gray-700 focus:border-green-500 focus:ring-green-500 rounded-lg"
                     required
                   />
                 </div>
